@@ -35,14 +35,28 @@ class Pad {
 
 class Text {
 	constructor(options){
-		this.options = options || {};		 		
+		this.options = options || {};
+		this.is_shown = true;
+		this.blink_counter = 0;		 		
 	}
 
-	draw(){		
-		this.options.context.font = this.options.font;
-		this.options.context.fillStyle = this.options.fill;
-		this.options.context.textAlign = "center";		
-  		this.options.context.fillText(this.options.text, this.options.canvas.width/2, this.options.canvas.height/2);  		  		  			 			
+	draw(){
+	    if(this.is_shown){		
+			this.options.context.font = this.options.font;
+			this.options.context.fillStyle = this.options.fill;
+			this.options.context.textAlign = "center";		
+  			this.options.context.fillText(this.options.text, this.options.x, this.options.y);
+  		}  		  		  			 			
+	}
+
+	update(){
+		if(this.options.animate && this.options.animate.type == 'blink'){
+			this.blink_counter = this.blink_counter + 1;
+			if(this.blink_counter > this.options.animate.duration){
+				this.is_shown = !this.is_shown;
+				this.blink_counter = 0;
+			}
+		}
 	}
 }
 
@@ -79,10 +93,15 @@ class Application {
 
     this.loser = new Text({
 			context:this.context_2d,
-			canvas: canvas_element,			
-			text: "You lose",
+			x: this.options.width/2,
+			y: this.options.height.height/2,			
+			text: "Fucking Loooser",
 			font: "48px serif",
-			fill:'#FF00FF'						
+			fill:'#FF00FF',
+			animate: {
+				type:'blink',
+				duration: 10
+			}						
 		})
 
 	};
@@ -101,21 +120,26 @@ class Application {
 	}
 
 	update(){
-		if(this.left_pressed){
+		if(this.left_pressed && !this.game_over_flag){
 			if(this.left_pressed && this.pad.options.x > 0){
 				this.pad.move(-10);
 		    }
 		}
 
-		if(this.right_pressed){
+		if(this.right_pressed  && !this.game_over_flag){
 			if(this.right_pressed && this.pad.options.x + this.pad.options.width < this.options.width){
 				this.pad.move(10);
 		    }
 		}
+		
+        this.loser.update();
         this.detect_game_over();
         this.detect_pad_collision();
 		this.detect_wall_collisions();
-		this.ball.move(this.ball_dx,this.ball_dy);		
+
+		if(!this.game_over_flag){
+			this.ball.move(this.ball_dx,this.ball_dy);			
+		}		
 			
 	}
 
@@ -170,7 +194,7 @@ class Application {
 	}
 
 	game_over(){	  
-      cancelAnimationFrame(this.id_request_update);
+      //cancelAnimationFrame(this.id_request_update);
       this.game_over_flag = true;      
 	}
 
