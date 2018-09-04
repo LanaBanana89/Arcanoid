@@ -60,6 +60,17 @@ class Text {
 	}
 }
 
+class Brick {
+	constructor(options){
+		this.options = options || {};		
+	}
+
+	draw {
+        this.options.context.fillStyle = this.options.fill;
+		this.options.context.fillRect(this.options.x,this.options.y,this.options.width,this.options.height);
+	}
+}
+
 class Application {
   constructor(options){
   	this.options = options || {};
@@ -79,7 +90,7 @@ class Application {
 			y:480,
 			radius: 10,
 			fill:'#1E90FF'
-		})
+		});
 
 	var pad_height = 10;
     this.pad = new Pad({
@@ -89,12 +100,12 @@ class Application {
 			width: 150,
 			height: pad_height,
 			fill:'#1E90FF'		
-	    })
+	    });
 
     this.loser = new Text({
 			context:this.context_2d,
 			x: this.options.width/2,
-			y: this.options.height.height/2,			
+			y: this.options.height/2,			
 			text: "Fucking Loooser",
 			font: "48px serif",
 			fill:'#FF00FF',
@@ -102,16 +113,45 @@ class Application {
 				type:'blink',
 				duration: 10
 			}						
-		})
+		});
 
-	};
+    this.bricks = [];
 
-	
+	this.bricks.push(new Brick({
+	    	context:this.context_2d,
+	    	x:100,
+	    	y:100,
+	    	height:30,
+	    	width:70,
+	    	fill:'#00ff00'
+	    }));
+	this.bricks.push(new Brick({
+	    	context:this.context_2d,
+	    	x:200,
+	    	y:100,
+	    	height:30,
+	    	width:70,
+	    	fill:'#00ff00'
+	    }));
+	this.bricks.push(new Brick({
+	    	context:this.context_2d,
+	    	x:300,
+	    	y:100,
+	    	height:30,
+	    	width:70,
+	    	fill:'#00ff00'
+	    }));
+
+  };	
 
 	draw() {   
 	    if(this.game_over_flag) this.loser.draw();	    
 		this.ball.draw();
-		this.pad.draw();		
+		this.pad.draw();
+
+		for(var i in this.bricks){
+			this.bricks[i].draw();
+		};		
 	}
 
 	clear(){
