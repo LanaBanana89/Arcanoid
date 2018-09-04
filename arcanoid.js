@@ -65,7 +65,7 @@ class Brick {
 		this.options = options || {};		
 	}
 
-	draw {
+	draw() {
         this.options.context.fillStyle = this.options.fill;
 		this.options.context.fillRect(this.options.x,this.options.y,this.options.width,this.options.height);
 	}
@@ -121,25 +121,25 @@ class Application {
 	    	context:this.context_2d,
 	    	x:100,
 	    	y:100,
-	    	height:30,
+	    	height:20,
 	    	width:70,
-	    	fill:'#00ff00'
+	    	fill:'#1E90FF'
 	    }));
 	this.bricks.push(new Brick({
 	    	context:this.context_2d,
-	    	x:200,
+	    	x:180,
 	    	y:100,
-	    	height:30,
+	    	height:20,
 	    	width:70,
-	    	fill:'#00ff00'
+	    	fill:'#1E90FF'
 	    }));
 	this.bricks.push(new Brick({
 	    	context:this.context_2d,
-	    	x:300,
+	    	x:260,
 	    	y:100,
-	    	height:30,
+	    	height:20,
 	    	width:70,
-	    	fill:'#00ff00'
+	    	fill:'#1E90FF'
 	    }));
 
   };	
