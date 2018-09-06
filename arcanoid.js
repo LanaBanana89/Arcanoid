@@ -106,7 +106,20 @@ class Application {
 			context:this.context_2d,
 			x: this.options.width/2,
 			y: this.options.height/2,			
-			text: "Fucking Loooser",
+			text: "Loooser",
+			font: "48px serif",
+			fill:'#FF00FF',
+			animate: {
+				type:'blink',
+				duration: 10
+			}						
+		});
+
+    this.winner = new Text({
+			context:this.context_2d,
+			x: this.options.width/2,
+			y: this.options.height/2,			
+			text: "Congratulation!!!",
 			font: "48px serif",
 			fill:'#FF00FF',
 			animate: {
@@ -117,41 +130,36 @@ class Application {
 
     this.bricks = [];
 
-	this.bricks.push(new Brick({
-	    	context:this.context_2d,
-	    	x:100,
-	    	y:100,
-	    	height:20,
-	    	width:70,
-	    	fill:'#1E90FF'
-	    }));
-	this.bricks.push(new Brick({
-	    	context:this.context_2d,
-	    	x:180,
-	    	y:100,
-	    	height:20,
-	    	width:70,
-	    	fill:'#1E90FF'
-	    }));
-	this.bricks.push(new Brick({
-	    	context:this.context_2d,
-	    	x:260,
-	    	y:100,
-	    	height:20,
-	    	width:70,
-	    	fill:'#1E90FF'
-	    }));
+    var start_y = 100; 
+    for(var j = 0;j < 5;j++){
+    	var start_x = 100;
+	    for(var i = 0;i < 10;i++){
+			this.bricks.push(new Brick({
+		    	context:this.context_2d,
+		    	x:start_x,
+		    	y:start_y,
+		    	height:30,
+		    	width:70,
+		    	fill:'#1E90FF'
+		    }));
+			start_x = start_x + 80;
+		}
+		start_y = start_y + 40;
+	}
 
   };	
 
 	draw() {   
-	    if(this.game_over_flag) this.loser.draw();	    
+	    	    
 		this.ball.draw();
 		this.pad.draw();
 
 		for(var i in this.bricks){
 			this.bricks[i].draw();
-		};		
+		};
+
+		if(this.game_over_flag) this.loser.draw();
+	    if(this.game_win_flag) this.winner.draw();		
 	}
 
 	clear(){
@@ -172,15 +180,21 @@ class Application {
 		    }
 		}
 		
-        this.loser.update();
+        
         this.detect_game_over();
         this.detect_pad_collision();
 		this.detect_wall_collisions();
+        this.detect_brick_collision();
+        this.loser.update();
+        this.winner.update();
 
-		if(!this.game_over_flag){
+		if(!this.game_over_flag && !this.game_win_flag){
 			this.ball.move(this.ball_dx,this.ball_dy);			
-		}		
-			
+		}
+
+		if(this.bricks.length == 0){
+			this.game_win();
+		}				
 	}
 
 	start(){
@@ -209,9 +223,9 @@ class Application {
 	}
 
 	detect_pad_collision(){
-        if (this.ball.options.y + this.ball.options.radius  > this.options.height - this.pad.options.height &&
-            this.ball.options.x > this.pad.options.x &&
-            this.ball.options.x < this.pad.options.x + this.pad.options.width){
+        if (this.ball.options.y + this.ball.options.radius  >= this.options.height - this.pad.options.height &&
+            this.ball.options.x >= this.pad.options.x &&
+            this.ball.options.x <= this.pad.options.x + this.pad.options.width){
             	this.ball_dy = -this.ball_dy;              
         }
     }
@@ -238,9 +252,51 @@ class Application {
       this.game_over_flag = true;      
 	}
 
+	game_win(){
+		this.game_win_flag = true;
+	}
+
 	detect_game_over(){
 		if(this.ball.options.y + this.ball.options.radius > this.options.height){
 			this.game_over();
+		}
+	}
+
+	detect_brick_collision(){
+		for(var i in this.bricks){
+			var brick = this.bricks[i];
+
+			var ball_left_x = this.ball.options.x - this.ball.options.radius;
+			var ball_y = this.ball.options.y;
+			if(ball_left_x <= brick.options.x + brick.options.width && ball_left_x >= brick.options.x && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
+				this.ball_dx = -this.ball_dx;
+				this.bricks.splice(i,1);
+				break;
+			}
+
+			var ball_right_x = this.ball.options.x + this.ball.options.radius;
+			if(ball_right_x >= brick.options.x && ball_right_x <= brick.options.x + brick.options.width && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
+				this.ball_dx = -this.ball_dx;
+				this.bricks.splice(i,1);
+				break;
+			}
+
+			var ball_x = this.ball.options.x;
+			var ball_top_y = this.ball.options.y - this.ball.options.radius;
+			if(ball_top_y <= brick.options.y + brick.options.height && ball_top_y >= brick.options.y && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
+				this.ball_dy = -this.ball_dy;
+				this.bricks.splice(i,1);
+				break;
+			}
+
+			var ball_bottom_y = this.ball.options.y + this.ball.options.radius;
+			if(ball_bottom_y >= brick.options.y && ball_bottom_y <= brick.options.y + brick.options.height && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
+				this.ball_dy = -this.ball_dy;
+				this.bricks.splice(i,1);
+				break;
+			}
+
+
 		}
 	}
 }
