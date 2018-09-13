@@ -127,6 +127,16 @@ class Application {
 				duration: 10
 			}						
 		});
+    
+    var score = 0;
+    this.text_score = new Text({
+			context:this.context_2d,
+			x: 55,
+			y: 30,			
+			text: "Score: " + score,
+			font: "18px serif",
+			fill:'#1E90FF',									
+		});
 
     this.bricks = [];
 
@@ -153,7 +163,7 @@ class Application {
 	    	    
 		this.ball.draw();
 		this.pad.draw();
-
+        this.text_score.draw();
 		for(var i in this.bricks){
 			this.bricks[i].draw();
 		};
@@ -271,6 +281,7 @@ class Application {
 			if(ball_left_x <= brick.options.x + brick.options.width && ball_left_x >= brick.options.x && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
 				this.ball_dx = -this.ball_dx;
 				this.bricks.splice(i,1);
+				score += 1;
 				break;
 			}
 
@@ -278,6 +289,7 @@ class Application {
 			if(ball_right_x >= brick.options.x && ball_right_x <= brick.options.x + brick.options.width && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
 				this.ball_dx = -this.ball_dx;
 				this.bricks.splice(i,1);
+				score += 1;
 				break;
 			}
 
@@ -286,6 +298,7 @@ class Application {
 			if(ball_top_y <= brick.options.y + brick.options.height && ball_top_y >= brick.options.y && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
 				this.ball_dy = -this.ball_dy;
 				this.bricks.splice(i,1);
+				score += 1;
 				break;
 			}
 
@@ -293,6 +306,7 @@ class Application {
 			if(ball_bottom_y >= brick.options.y && ball_bottom_y <= brick.options.y + brick.options.height && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
 				this.ball_dy = -this.ball_dy;
 				this.bricks.splice(i,1);
+				score += 1;
 				break;
 			}
 
