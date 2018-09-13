@@ -56,7 +56,7 @@ class Text {
 				this.is_shown = !this.is_shown;
 				this.blink_counter = 0;
 			}
-		}
+		}       
 	}
 }
 
@@ -128,14 +128,13 @@ class Application {
 			}						
 		});
     
-    var score = 0;
+    this.score = 0;
     this.text_score = new Text({
 			context:this.context_2d,
 			x: 55,
 			y: 30,			
-			text: "Score: " + score,
 			font: "18px serif",
-			fill:'#1E90FF',									
+			fill:'#1E90FF'								
 		});
 
     this.bricks = [];
@@ -190,7 +189,7 @@ class Application {
 		    }
 		}
 		
-        
+        this.text_score.options.text = "Score: " + this.score;        
         this.detect_game_over();
         this.detect_pad_collision();
 		this.detect_wall_collisions();
@@ -272,7 +271,7 @@ class Application {
 		}
 	}
 
-	detect_brick_collision(){
+	detect_brick_collision(){		
 		for(var i in this.bricks){
 			var brick = this.bricks[i];
 
@@ -281,7 +280,7 @@ class Application {
 			if(ball_left_x <= brick.options.x + brick.options.width && ball_left_x >= brick.options.x && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
 				this.ball_dx = -this.ball_dx;
 				this.bricks.splice(i,1);
-				score += 1;
+				this.score += 1;				
 				break;
 			}
 
@@ -289,7 +288,7 @@ class Application {
 			if(ball_right_x >= brick.options.x && ball_right_x <= brick.options.x + brick.options.width && ball_y >= brick.options.y && ball_y <= brick.options.y + brick.options.height ){
 				this.ball_dx = -this.ball_dx;
 				this.bricks.splice(i,1);
-				score += 1;
+				this.score += 1;				
 				break;
 			}
 
@@ -298,7 +297,7 @@ class Application {
 			if(ball_top_y <= brick.options.y + brick.options.height && ball_top_y >= brick.options.y && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
 				this.ball_dy = -this.ball_dy;
 				this.bricks.splice(i,1);
-				score += 1;
+				this.score += 1;				
 				break;
 			}
 
@@ -306,7 +305,7 @@ class Application {
 			if(ball_bottom_y >= brick.options.y && ball_bottom_y <= brick.options.y + brick.options.height && ball_x >= brick.options.x && ball_x <= brick.options.x + brick.options.width ){
 				this.ball_dy = -this.ball_dy;
 				this.bricks.splice(i,1);
-				score += 1;
+				this.score += 1;				
 				break;
 			}
 
